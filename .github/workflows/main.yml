@@ -56,7 +56,6 @@ jobs:
           server_port: 587
           username: ${{ secrets.GMAIL_USERNAME }}
           password: ${{ secrets.GMAIL_PASSWORD }}
-          encryption: tls
           subject: Release APK v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}
           body: |
             Hello team,
