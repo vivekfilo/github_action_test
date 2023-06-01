@@ -9,6 +9,7 @@ on:
         default: '0.0'
       type:
         description: 'APK type'
+        type: choice
         options:
           - 'release'
           - 'debug'
