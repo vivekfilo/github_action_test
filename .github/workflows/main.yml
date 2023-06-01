@@ -36,23 +36,10 @@ jobs:
         id: get_version
         run: echo ::set-output name=version::$(awk '/version/{gsub(/"/,""); print $NF}' pubspec.yaml)
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push to Release
+        id: push_to_release
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: v${{ steps.get_version.outputs.version }}
-          release_name: Release ${{ steps.get_version.outputs.version }}
-          draft: false
-          prerelease: false
-
-      - name: Upload APK
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}.apk
-          asset_name: MyApp-${{ github.event.inputs.type }}.apk
-          asset_content_type: application/vnd.android.package-archive
+          artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}.apk
+          tag: v${{ steps.get_version.outputs.version }}
+          token: ${{ secrets.TOKEN }}
