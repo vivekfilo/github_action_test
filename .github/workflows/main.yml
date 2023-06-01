@@ -45,5 +45,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}.apk
-          tag: ${{ github.event.inputs.tag }}
+          tag: v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}
           token: ${{ secrets.TOKEN }}
