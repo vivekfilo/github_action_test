@@ -21,33 +21,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.10.0'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build APK
-        run: flutter build apk --${{ github.event.inputs.type }}
-        
-      - name: Get version from pubspec
-        id: get_version
-        run: echo ::set-output name=version::$(awk '/version/{gsub(/"/,""); print $NF}' pubspec.yaml)
-
-      - name: Push to Release
-        id: push_to_release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}.apk
-          tag: v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}
-          token: ${{ secrets.TOKEN }}
+      
           
       - name: Send email with release link
         uses: dawidd6/action-send-mail@v3
