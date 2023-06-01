@@ -1,3 +1,5 @@
+[![Build and Release APK](https://github.com/vivekfilo/github_action_test/actions/workflows/main.yml/badge.svg)](https://github.com/vivekfilo/github_action_test/actions/workflows/main.yml)
+
 # github_action_test
 
 A new Flutter project.
