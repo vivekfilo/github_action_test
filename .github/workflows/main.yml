@@ -3,6 +3,10 @@ name: Build and Release APK
 on:
   workflow_dispatch:
     inputs:
+      tag:
+        description: 'APK tag (version name)'
+        required: true
+        default: '0.0'
       type:
         description: 'APK type'
         options:
@@ -41,5 +45,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}.apk
-          tag: v123
+          tag: ${{ github.event.inputs.tag }}
           token: ${{ secrets.TOKEN }}
