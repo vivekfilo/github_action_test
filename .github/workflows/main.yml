@@ -48,3 +48,23 @@ jobs:
           artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}.apk
           tag: v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}
           token: ${{ secrets.TOKEN }}
+          
+      - name: Send email with release link
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+          encryption: tls
+          subject: Release APK v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}
+          body: |
+            Hello team,
+            
+            We have released a new APK version: v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}.
+            You can download it from the following link:
+            
+            Download link: [Download APK](https://example.com/path/to/release)
+
+          from: vivek.kumar@askfilo.com
+          to: ujjawal.tiwari@askfilo.com
