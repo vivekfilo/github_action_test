@@ -40,7 +40,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}-release.apk
-          tag: v${{ github.event.inputs.tag }}
+          tag: v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}
+          #other options
           token: ${{ secrets.TOKEN }}
       - name: Send notification to Slack
         id: slack
@@ -49,14 +50,16 @@ jobs:
           # For posting a rich message using Block Kit
           payload: |
             {
-              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "text": "New build available | ${{ github.event.inputs.type }} | v${{ github.event.inputs.tag }}",
               "blocks": [
                 {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-                  }
+                  "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Download",
+                        "emoji": true
+                    },
+                    "url": "${{ steps.push_to_release.outputs.artifact_url }}"
                 }
               ]
             }
