@@ -1,43 +1,44 @@
 name: Build and Release APK
-
 on:
   workflow_dispatch:
     inputs:
       tag:
         description: 'APK tag (version name)'
         required: true
-        default: '0.0'
+        default: '3.8.2'
       type:
-        description: 'APK type'
+        description: 'Environment type'
         type: choice
         options:
-          - 'release'
-          - 'debug'
+          - 'production'
+          - 'staging'
         required: true
-        default: 'release'
-
+        default: 'production'
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      
-          
-      - name: Send email with release link
-        uses: dawidd6/action-send-mail@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
-          server_address: smtp.gmail.com
-          server_port: 587
-          username: ${{ secrets.GMAIL_USERNAME }}
-          password: ${{ secrets.GMAIL_PASSWORD }}
-          subject: Release APK v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}
-          body: |
-            Hello team,
-            
-            We have released a new APK version: v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}.
-            You can download it from the following link:
-            
-            Download link: [Download APK](https://example.com/path/to/release)
+          submodules: true
 
-          from: vivek.kumar@askfilo.com
-          to: ujjawal.tiwari@askfilo.com
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.0'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --flavor ${{ github.event.inputs.type }}
+
+      - name: Push to Release
+        id: push_to_release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}-release.apk
+          tag: v${{ github.event.tag }}
+          token: ${{ secrets.TOKEN }}
