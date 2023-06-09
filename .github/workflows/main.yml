@@ -42,34 +42,12 @@ jobs:
         id: extract_version
         run: |
           version=$(sed -n 's/version: \(.*\)+.*/\1/p' pubspec.yaml)
-          echo "::set-output name=version::$version"
+          echo "VERSION=${version}" >> $GITHUB_ENV
 
       - name: Push to Release
         id: push_to_release
         uses: ncipollo/release-action@v1
         with:
           artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}-release.apk
-          tag: v${{ steps.extract_version.outputs.version }}-${{ github.event.inputs.type }}
+          tag: v${{ env.VERSION }}-${{ github.event.inputs.type }}
           token: ${{ secrets.TOKEN }}
-      - name: Send notification to Slack
-        id: slack
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "text": "New build available | ${{ github.event.inputs.type }} | v${{ github.event.inputs.tag }}",
-              "blocks": [
-                {
-                  "type": "button",
-                    "text": {
-                        "type": "plain_text",
-                        "text": "Download",
-                        "emoji": true
-                    },
-                    "url": "${{ steps.push_to_release.outputs.artifact_url }}"
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
