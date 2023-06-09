@@ -32,6 +32,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Delete 'signingConfig signingConfigs.release' line
+        run: cd android && cd app sed '/signingConfig signingConfigs.debug/d' build.gradle > build.gradle.tmp && mv build.gradle.tmp build.gradle
+      - name: Delete 'keystoreProperties['storeFile'])' line
+        run: sed '/storeFile file(keystoreProperties['storeFile'])/d' build.gradle > build.gradle.tmp && mv build.gradle.tmp build.gradle && cd .. && cd ..
+
       - name: Build APK
         run: flutter build apk --flavor ${{ github.event.inputs.type }}
 
@@ -41,13 +46,11 @@ jobs:
         with:
           artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}-release.apk
           tag: v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}
-          #other options
           token: ${{ secrets.TOKEN }}
       - name: Send notification to Slack
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          # For posting a rich message using Block Kit
           payload: |
             {
               "text": "New build available | ${{ github.event.inputs.type }} | v${{ github.event.inputs.tag }}",
