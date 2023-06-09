@@ -32,10 +32,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Delete 'signingConfig signingConfigs.release' line
-        run: cd android && cd app && ls && sed '/signingConfig signingConfigs.release/d' build.gradle > build.gradle.tmp && mv build.gradle.tmp build.gradle && ls
-      - name: Delete 'keystoreProperties['storeFile'])' line
-        run: sed '/storeFile file(keystoreProperties/d' build.gradle > build.gradle.tmp && mv build.gradle.tmp build.gradle && cd .. && cd ..
+      - name: Delete 'signingConfig signingConfigs.release' and 'keystoreProperties['storeFile'])' lines
+        run: cd android && cd app && ls && sed -i.bak -e '/signingConfig signingConfigs.release/d' -e '/storeFile file(keystoreProperties/d' ./build.gradle && ls && cd .. && cd ..
 
       - name: Build APK
         run: flutter build apk --flavor ${{ github.event.inputs.type }}
