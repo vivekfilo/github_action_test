@@ -38,12 +38,18 @@ jobs:
       - name: Build APK
         run: flutter build apk --flavor ${{ github.event.inputs.type }}
 
+      - name: Extract version
+        id: extract_version
+        run: |
+          version=$(sed -n 's/version: \(.*\)+.*/\1/p' pubspec.yaml)
+          echo "::set-output name=version::$version"
+
       - name: Push to Release
         id: push_to_release
         uses: ncipollo/release-action@v1
         with:
           artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}-release.apk
-          tag: v${{ github.event.inputs.tag }}-${{ github.event.inputs.type }}
+          tag: v${{ steps.extract_version.outputs.version }}-${{ github.event.inputs.type }}
           token: ${{ secrets.TOKEN }}
       - name: Send notification to Slack
         id: slack
