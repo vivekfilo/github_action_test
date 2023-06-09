@@ -33,7 +33,7 @@ jobs:
         run: flutter pub get
 
       - name: Delete 'signingConfig signingConfigs.release' line
-        run: cd android && cd app sed '/signingConfig signingConfigs.debug/d' build.gradle > build.gradle.tmp && mv build.gradle.tmp build.gradle
+        run: cd android && cd app && sed '/signingConfig signingConfigs.debug/d' build.gradle > build.gradle.tmp && mv build.gradle.tmp build.gradle
       - name: Delete 'keystoreProperties['storeFile'])' line
         run: sed '/storeFile file(keystoreProperties['storeFile'])/d' build.gradle > build.gradle.tmp && mv build.gradle.tmp build.gradle && cd .. && cd ..
 
