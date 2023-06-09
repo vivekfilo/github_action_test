@@ -2,10 +2,6 @@ name: Build APK
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'APK tag (version name)'
-        required: true
-        default: '3.8.2'
       type:
         description: 'Environment type'
         type: choice
@@ -51,3 +47,4 @@ jobs:
           artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}-release.apk
           tag: v${{ env.VERSION }}-${{ github.event.inputs.type }}
           token: ${{ secrets.TOKEN }}
+          latest: true
