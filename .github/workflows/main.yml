@@ -47,4 +47,6 @@ jobs:
           artifacts: build/app/outputs/flutter-apk/app-${{ github.event.inputs.type }}-release.apk
           tag: v${{ env.VERSION }}-${{ github.event.inputs.type }}
           token: ${{ secrets.TOKEN }}
-          latest: true
+          makeLatest: true
+          allowUpdates: true
+          generateReleaseNotes: true
